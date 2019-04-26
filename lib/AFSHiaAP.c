@@ -6,7 +6,10 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <errno.h>
+#include <stdlib.h>
+#include <pthread.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 #include "crypter.h"
 
 static const char *dirpath = "/home/vagrant/shift4";
@@ -51,6 +54,26 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		memset(&st, 0, sizeof(st));
 		st.st_ino = de->d_ino;
 		st.st_mode = de->d_type << 12;
+
+	// DEKRIPSI	
+		//eksepsi
+		if(strcmp(de->d_name, ".")==0) continue;
+    else if(strcmp(de->d_name, "..")==0) continue;
+
+		//generate nama baru
+		int i=0;
+		char *nama_Baru = de->d_name;
+		while(nama_Baru[i]){
+
+				//cari di list
+				int pos = cariDiList(&nama_Baru[i]);
+				pos = ( pos + length - shift) % length;
+				nama_Baru[i] = list[pos];
+
+				i++;
+		}
+
+		sprintf(de->d_name, "%s", nama_Baru);
 		res = (filler(buf, de->d_name, &st, 0));
 			if(res!=0) break;
 	}
@@ -91,13 +114,39 @@ static struct fuse_operations xmp_oper = {
 	.read		= xmp_read,
 };
 
+//nomor 2a
+// void* gabungin(void *arg){
+// 	//yuk gabungin videonya
+// 	return;
+// }
+
+//nomor 2a
+void makeDir(){
+	// int err;
+  //   pthread_t tid;
+
+	struct stat st = {0};
+	char *dir = "/home/vagrant/shift4/Videos";
+	if(stat(dir, &st) == -1){
+		mkdir(dir, 0660);
+	}
+
+	//buat thread untuk gabungin video
+	// err = pthread_create( &tid, NULL, gabungin, NULL);
+	// if(err){
+	// 	fprintf(stderr,"Error - pthread_create() return code: %d\n",err);
+	// 	exit(EXIT_FAILURE);
+	// }
+	// pthread_join(tid, NULL);
+}
+
 int main(int argc, char *argv[])
 {
 	umask(0);
-
-	//nomor1
 	length = strlen(list);
-    decrypt("/home/vagrant/shift4/");
+
+	//nomor2
+	makeDir();
 
 	return fuse_main(argc, argv, &xmp_oper, NULL);
 }

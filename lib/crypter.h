@@ -42,27 +42,32 @@ int encrypt(char *dir_name){
         if(strcmp(de->d_name, ".")==0) continue;
         else if(strcmp(de->d_name, "..")==0) continue;
 
-        strcat(strcat(dir_Temp,de->d_name), "/");
+        // strcat(dir_Temp,de->d_name);
 
+        strcat(strcat(dir_Temp,de->d_name), "/");
         //encrypt sub folder
         encrypt(dir_Temp);
 
-
         //generate nama baru
+        memset(dir_Temp, 0, sizeof dir_Temp);
+
+        strcat(strcat(dir_Temp,dir_name), de->d_name);
+
         i=0;
         char *nama_Baru = de->d_name;
         while(nama_Baru[i]){
 
             //cari di list
             int pos = cariDiList(&nama_Baru[i]);
-            pos = ( pos + shift) % length;
+            pos = ( pos + length + shift) % length;
             nama_Baru[i] = list[pos];
 
             i++;
         }
 
-        strcat(strcat(dir_Baru,nama_Baru), "/");
-
+        strcat(dir_Baru,nama_Baru);
+        
+        // printf("%s\n%s\n",dir_Temp, dir_Baru);
         //rename
         rename(dir_Temp, dir_Baru);
     }

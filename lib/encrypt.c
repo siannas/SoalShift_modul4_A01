@@ -3,7 +3,7 @@
 
 int main(){
     length = strlen(list);
-    decrypt("/home/vagrant/shift4/");
-    
+    encrypt("/home/vagrant/shift4/");
+    // rename("/home/vagrant/shift5", "/home/vagrant/shift4");
     return 0; 
 }

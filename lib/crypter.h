@@ -99,13 +99,17 @@ int decrypt(char *dir_name){
         if(strcmp(de->d_name, ".")==0) continue;
         else if(strcmp(de->d_name, "..")==0) continue;
 
-        strcat(strcat(dir_Temp,de->d_name), "/");
+        // strcat(dir_Temp,de->d_name);
 
-        //encrypt sub folder
+        strcat(strcat(dir_Temp,de->d_name), "/");
+        //decrypt sub folder
         decrypt(dir_Temp);
 
-
         //generate nama baru
+        memset(dir_Temp, 0, sizeof dir_Temp);
+
+        strcat(strcat(dir_Temp,dir_name), de->d_name);
+
         i=0;
         char *nama_Baru = de->d_name;
         while(nama_Baru[i]){
@@ -118,8 +122,9 @@ int decrypt(char *dir_name){
             i++;
         }
 
-        strcat(strcat(dir_Baru,nama_Baru), "/");
-
+        strcat(dir_Baru,nama_Baru);
+        
+        // printf("%s\n%s\n",dir_Temp, dir_Baru);
         //rename
         rename(dir_Temp, dir_Baru);
     }

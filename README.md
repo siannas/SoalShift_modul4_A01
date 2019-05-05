@@ -137,4 +137,53 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 ### <a name="no2" ></a>Nomor 2
 ---
 #### **PENJELASAN**
-Mohon maaf mas kami masih perlu belajar lagi, masih belum sepenuhnya faham.
+belum
+
+### <a name="no3" ></a>Nomor 3
+---
+#### **PENJELASAN**
+
+Langkah yang dilakukan adalah :
+Pada saat melakukan pembacaan direktori, perlu mengecek user dan group permissionnya. jika `!strcmp(pw->pw_name, "chipset") || !strcmp(pw->pw_name, "ic_controller") && (!strcmp(gr->gr_name, "rusak"))` maka perlu dihapus filenya dan dilakukan penulisan keterangan di filemiris. 
+di bawah ini kode untuk string yang akan digunakan sebagai keterangan tersebut
+```c
+strftime(ftime, 36, "%d.%m.%Y %H:%M:%S", localtime(&st.st_atime)); 
+sprintf(fdata, "%s %d %d %s\n", de->d_name, st.st_uid, st.st_gid, ftime);
+```
+
+
+### <a name="no4" ></a>Nomor 4
+---
+#### **PENJELASAN**
+
+Yang perlu kita lakukan adalah membuat folder YOUTUBER dengan mode `750` begitu pulu semua folder di subdirektori folder YOUTUBER.
+```c
+if(isSubstring(name,"/YOUTUBER")!=-1){
+			mode = 0750;
+res = mkdir(fpath, mode);
+}
+else if(isSubstring("YOUTUBER/", name)!=-1){
+	mode = 0750;
+res = mkdir(fpath, mode);
+	}
+```
+
+Selain itu perlu menjadikan semua file di dalam Folder YOUTUBER dengan penambahan ekstensi `.iz1` dan mode `640`. 
+```c
+if(isSubstring("YOUTUBER/",name)!=-1){
+	mode = 0640;
+	strcat(fpath,".iz1");
+		res = creat(fpath, mode);
+}
+```
+
+dan jika hendak merubah file tersebut, maka akan memunculkan error 
+```c
+char *argv[5] = {"zenity", "--error","--text=File ekstensi iz1 tidak boleh diubah permissionnya.","--title=Tidak bisa merubah", NULL};
+execv("/usr/bin/zenity", argv);
+```
+
+### <a name="no5" ></a>Nomor 5
+---
+#### **PENJELASAN**
+tidak ada
